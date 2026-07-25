@@ -133,7 +133,7 @@ export default function AIAssistantClient() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-[14px] text-[#C4897A]"
           >
-            Tell me about your skin, your concerns, or the look you're after.
+            Tell me about your skin, your concerns, or the look you&apos;re after.
           </motion.p>
         </div>
       </div>

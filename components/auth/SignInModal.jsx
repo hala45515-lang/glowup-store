@@ -141,7 +141,7 @@ export default function SignInModal({ open, onClose }) {
                 Continue with Google
               </motion.button>
               <p className="text-center text-[11px] text-[#C4A090] mt-5 leading-relaxed">
-                By continuing, you agree to GlowCart's Terms &amp; Privacy Policy.
+                By continuing, you agree to GlowCart&apos;s Terms &amp; Privacy Policy.
               </p>
             </div>
           </motion.div>

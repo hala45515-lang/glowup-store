@@ -174,7 +174,7 @@ export default function CartClient({ suggestions: suggestionPool = [], repairIma
                   <ShoppingBag className="h-9 w-9 text-[#C4A090]" />
                 </motion.div>
                 <h3 className="text-[20px] font-black text-[#2C1810] mb-2">Your bag is empty</h3>
-                <p className="text-[#7A4A3A] text-[14px] mb-6">Discover something you'll love.</p>
+                <p className="text-[#7A4A3A] text-[14px] mb-6">Discover something you&apos;ll love.</p>
                 <Link
                   href="/shop"
                   className="group inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#C4614A] text-white font-semibold text-[14px] hover:bg-[#A84E39] transition-colors"
@@ -281,7 +281,7 @@ export default function CartClient({ suggestions: suggestionPool = [], repairIma
                         Add <span className="text-[#C4614A]">${remainingForFreeShipping.toFixed(2)}</span> more for free shipping!
                       </span>
                     ) : (
-                      <span className="text-emerald-600">You've unlocked free shipping! 🎉</span>
+                      <span className="text-emerald-600">You&apos;ve unlocked free shipping! 🎉</span>
                     )}
                   </div>
                   <div className="h-2 rounded-full bg-[#F2D4C8] overflow-hidden">

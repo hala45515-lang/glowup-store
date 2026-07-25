@@ -65,7 +65,7 @@ export default function AIAssistant() {
             {/* Description */}
             <p className="text-[15px] text-[#C4897A] leading-relaxed mb-10 max-w-md mx-auto">
               Personalized product recommendations, powered by AI. Tell us your
-              skin type, concerns and preferences — we'll build a routine that's
+              skin type, concerns and preferences — we&apos;ll build a routine that&apos;s
               unmistakably you.
             </p>
 

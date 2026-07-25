@@ -26,7 +26,7 @@ export default function FeaturedThisWeek({ products }) {
             </svg>
           </div>
           <p className="text-[#7A4A3A] text-[15px] max-w-lg mx-auto">
-            The shades our community can't stop reaching for — restocked, reviewed and ready for summer.
+            The shades our community can&apos;t stop reaching for — restocked, reviewed and ready for summer.
           </p>
         </div>
 

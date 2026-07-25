@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
@@ -21,7 +22,9 @@ export default function RootLayout({ children }) {
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} antialiased bg-glow-bg text-glow-text min-h-screen`}>
         <AuthProvider>
-          <Navbar />
+          <Suspense fallback={null}>
+            <Navbar />
+          </Suspense>
           <main className="min-h-[calc(100vh-4rem)]">
             {children}
           </main>
