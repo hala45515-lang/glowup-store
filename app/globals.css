@@ -1,27 +1,79 @@
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+}
+
+@layer base {
+  .theme {
+    --font-heading: var(--font-sans);
+    --font-sans: var(--font-sans);
+  }
+  :root {
+    /* GlowCart Warm Summer Palette */
+    --background: #FFF8F5;
+    --foreground: #2C1810;
+    --card: #FFFFFF;
+    --card-foreground: #2C1810;
+    --popover: #FFFFFF;
+    --popover-foreground: #2C1810;
+    --primary: #C4614A;
+    --primary-foreground: #FFF8F5;
+    --secondary: #F2D4C8;
+    --secondary-foreground: #2C1810;
+    --muted: #F2D4C8;
+    --muted-foreground: #7A4A3A;
+    --accent: #E8A598;
+    --accent-foreground: #2C1810;
+    --destructive: oklch(0.577 0.245 27.325);
+    --border: #E8C4B8;
+    --input: #F2D4C8;
+    --ring: #C4614A;
+    --radius: 0.625rem;
+
+    /* GlowCart Custom */
+    --glow-bg: #FFF8F5;
+    --glow-primary: #C4614A;
+    --glow-accent: #E8A598;
+    --glow-text: #2C1810;
+    --glow-secondary: #F2D4C8;
+  }
+
+  .dark {
+    --background: #1A0E0B;
+    --foreground: #FFF8F5;
+    --card: #2C1810;
+    --card-foreground: #FFF8F5;
+    --popover: #2C1810;
+    --popover-foreground: #FFF8F5;
+    --primary: #E8A598;
+    --primary-foreground: #2C1810;
+    --secondary: #3D1F17;
+    --secondary-foreground: #FFF8F5;
+    --muted: #3D1F17;
+    --muted-foreground: #C4897A;
+    --accent: #C4614A;
+    --accent-foreground: #FFF8F5;
+    --destructive: oklch(0.704 0.191 22.216);
+    --border: #4A2018;
+    --input: #3D1F17;
+    --ring: #E8A598;
+  }
+
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+  }
+  html {
+    @apply font-sans;
   }
 }
