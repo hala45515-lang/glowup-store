@@ -211,8 +211,20 @@ function ModalVisual({ product, transform, showCredit = true }) {
 
 function RelatedCard({ product, index = 0, onAddToCart }) {
   const [added, setAdded] = useState(false);
-  const [wished, setWished] = useState(false);
+  const addToWishlist = useWishlistStore((s) => s.addItem);
+  const removeFromWishlist = useWishlistStore((s) => s.removeItem);
+  const wished = useWishlistStore((s) => s.isInWishlist(product.id));
   const bg = product.bg || product.bgColor || "#F2D4C8";
+
+  function handleToggleWishlist() {
+    if (wished) {
+      removeFromWishlist(product.id);
+      toast.success("Removed from wishlist.");
+    } else {
+      addToWishlist({ ...product, bg: product.bg || product.bgColor });
+      toast.success("Added to wishlist!");
+    }
+  }
   const tagLabel = product.tag === "new" ? "NEW" : product.tag === "bestseller" ? "BESTSELLER" : product.tag === "limited" ? `SALE · $${product.salePrice || product.price}` : null;
 
   return (
@@ -235,7 +247,7 @@ function RelatedCard({ product, index = 0, onAddToCart }) {
           </span>
         )}
         <button
-          onClick={() => setWished(!wished)}
+          onClick={handleToggleWishlist}
           className={`absolute top-2 right-2 z-10 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center transition-colors ${wished ? "text-[#C4614A]" : "text-[#7A4A3A]"}`}
         >
           <Heart className={`h-3.5 w-3.5 ${wished ? "fill-current" : ""}`} />
