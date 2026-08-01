@@ -121,7 +121,7 @@ const ProductCard = forwardRef(function ProductCard({ product, onQuickView, inde
           animate={isWished ? { scale: [1, 1.3, 1] } : { scale: 1 }}
           transition={{ duration: 0.35 }}
           className={`absolute top-3 right-3 z-20 w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center transition-colors ${
-            isWished ? "text-[#C4614A]" : "text-[#7A4A3A] opacity-0 group-hover:opacity-100"
+            isWished ? "text-[#C4614A]" : "text-[#7A4A3A] opacity-100 lg:opacity-0 lg:group-hover:opacity-100"
           }`}
           aria-label="Toggle wishlist"
         >
