@@ -461,7 +461,7 @@ export default function HeroSection({ portrait, accent }) {
                 y: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1.6 },
               }}
               whileHover={{ rotate: 0, scale: 1.04 }}
-              className="absolute bottom-2 left-0 lg:left-4 z-20 bg-white rounded-3xl shadow-2xl p-4 w-[210px]"
+              className="absolute -bottom-6 left-0 lg:bottom-2 lg:left-4 z-20 bg-white rounded-3xl shadow-2xl p-4 w-[210px]"
             >
               <div className="w-full h-[150px] bg-[#F5D5C8] rounded-2xl mb-3 overflow-hidden flex items-center justify-center">
                 {accent?.url ? (
