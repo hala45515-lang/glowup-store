@@ -215,14 +215,14 @@ function getRecommendations(skinTone, skinType, concerns) {
 
 function Stepper({ current }) {
   return (
-    <div className="flex items-center justify-center gap-0 py-10">
+    <div className="flex items-center justify-center gap-0 py-10 px-4">
       {STEPS.map((step, idx) => {
         const done   = step.id < current;
         const active = step.id === current;
         return (
           <div key={step.id} className="flex items-center">
             <div className="flex flex-col items-center gap-2">
-              <div className={`w-12 h-12 rounded-full flex items-center justify-center text-[15px] font-bold border-2 transition-all ${
+              <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-[13px] sm:text-[15px] font-bold border-2 transition-all shrink-0 ${
                 active ? "bg-[#8B2A50] border-[#8B2A50] text-white shadow-md"
                 : done  ? "bg-[#8B2A50] border-[#8B2A50] text-white"
                 :         "bg-white border-[#E8C4B8] text-[#C4897A]"
@@ -233,14 +233,14 @@ function Stepper({ current }) {
                   </svg>
                 ) : step.id}
               </div>
-              <span className={`text-[12px] font-semibold whitespace-nowrap ${
+              <span className={`hidden sm:block text-[12px] font-semibold whitespace-nowrap ${
                 active ? "text-[#8B2A50]" : done ? "text-[#8B2A50]" : "text-[#C4B0A8]"
               }`}>
                 {step.label}
               </span>
             </div>
             {idx < STEPS.length - 1 && (
-              <div className={`w-20 md:w-28 h-px mx-1 mb-5 transition-colors ${done ? "bg-[#8B2A50]" : "bg-[#E8C4B8]"}`} />
+              <div className={`w-8 sm:w-20 md:w-28 h-px mx-1 sm:mb-5 transition-colors shrink-0 ${done ? "bg-[#8B2A50]" : "bg-[#E8C4B8]"}`} />
             )}
           </div>
         );
@@ -564,7 +564,7 @@ function StepResults({ skinTone, skinType, concerns, images, onRetake }) {
       </div>
 
       {/* Shade profile banner */}
-      <div className="relative overflow-hidden rounded-2xl mb-10 px-8 py-7 flex items-center gap-6"
+      <div className="relative overflow-hidden rounded-2xl mb-10 px-6 sm:px-8 py-7 flex flex-col sm:flex-row items-center gap-5 sm:gap-6 text-center sm:text-left"
         style={{ background: "linear-gradient(130deg, #8B2A50, #A83860, #7A2040)" }}>
         {/* Decorative circles */}
         <div className="absolute right-12 top-1/2 -translate-y-1/2 w-40 h-40 rounded-full opacity-15 pointer-events-none"
@@ -580,15 +580,15 @@ function StepResults({ skinTone, skinType, concerns, images, onRetake }) {
         </div>
 
         {/* Info */}
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 w-full sm:w-auto">
           <p className="text-white/60 text-[10px] font-black tracking-[0.22em] uppercase mb-1">
             Your Shade Profile
           </p>
-          <h3 className="text-white text-[26px] font-black mb-3 leading-tight">
+          <h3 className="text-white text-[22px] sm:text-[26px] font-black mb-3 leading-tight">
             {toneObj?.label} · {typeObj?.label} Skin
           </h3>
           {concernLabels.length > 0 ? (
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap justify-center sm:justify-start gap-2">
               {concernLabels.map((l) => (
                 <span key={l} className="text-[12px] font-semibold text-white/80 bg-white/15 px-3 py-1 rounded-full">
                   {l}
@@ -605,7 +605,7 @@ function StepResults({ skinTone, skinType, concerns, images, onRetake }) {
         {/* Save profile */}
         <button
           onClick={handleSaveProfile}
-          className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-full border-2 border-white/40 text-white text-[13px] font-semibold hover:bg-white/10 transition-colors"
+          className="relative shrink-0 w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full border-2 border-white/40 text-white text-[13px] font-semibold hover:bg-white/10 transition-colors"
         >
           <Bookmark className="h-4 w-4" />
           {saved ? "Saved!" : "Save Profile"}
@@ -632,7 +632,7 @@ function StepResults({ skinTone, skinType, concerns, images, onRetake }) {
       </div>
 
       {/* Save profile CTA */}
-      <div className="bg-[#F5E8DC] rounded-2xl px-7 py-6 flex items-center gap-5">
+      <div className="bg-[#F5E8DC] rounded-2xl px-6 sm:px-7 py-6 flex flex-col sm:flex-row items-center text-center sm:text-left gap-4 sm:gap-5">
         <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shrink-0">
           <Bookmark className="h-5 w-5 text-[#8B2A50]" />
         </div>
@@ -642,7 +642,7 @@ function StepResults({ skinTone, skinType, concerns, images, onRetake }) {
         </div>
         <button
           onClick={handleSaveProfile}
-          className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#8B2A50] hover:bg-[#6A1A38] text-white text-[13px] font-semibold transition-colors">
+          className="shrink-0 w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-[#8B2A50] hover:bg-[#6A1A38] text-white text-[13px] font-semibold transition-colors">
           <Bookmark className="h-4 w-4" />
           {saved ? "Saved!" : "Save to Profile"}
         </button>

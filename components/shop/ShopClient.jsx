@@ -13,12 +13,14 @@ import {
   ChevronRight,
   X,
   Star,
+  SlidersHorizontal,
 } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
 import { toast } from "sonner";
 import ProductImage from "@/components/shop/ProductImage";
 import ProductCard from "@/components/shop/ProductCard";
+import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { CATEGORIES as BASE_CATEGORIES } from "@/lib/products";
 
 const CATEGORIES = [{ id: "all", label: "All Products", emoji: null }, ...BASE_CATEGORIES];
@@ -82,12 +84,12 @@ function QuickViewModal({ product, onClose }) {
 
       {/* Card */}
       <div
-        className="relative z-10 w-full max-w-[820px] bg-white rounded-[28px] overflow-hidden shadow-2xl flex"
-        style={{ animation: "slideUp 0.28s cubic-bezier(0.34,1.4,0.64,1)", minHeight: "420px" }}
+        className="relative z-10 w-full max-w-[820px] max-h-[90vh] overflow-y-auto bg-white rounded-[28px] shadow-2xl flex flex-col lg:flex-row lg:overflow-hidden"
+        style={{ animation: "slideUp 0.28s cubic-bezier(0.34,1.4,0.64,1)" }}
       >
         {/* Left – product visual */}
         <div
-          className="w-[46%] shrink-0 relative flex items-center justify-center min-h-[420px]"
+          className="w-full lg:w-[46%] shrink-0 relative flex items-center justify-center h-[260px] lg:h-auto lg:min-h-[420px]"
           style={{ backgroundColor: product.bgColor }}
         >
           {product.tag === "bestseller" && (
@@ -219,7 +221,7 @@ function ShopProductListRow({ product, onQuickView }) {
   return (
     <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow flex gap-0">
       <div
-        className="relative w-36 shrink-0"
+        className="relative w-28 sm:w-36 shrink-0"
         style={{ backgroundColor: product.bgColor }}
       >
         <ProductImage src={product.image} alt={product.name} category={product.category} />
@@ -254,12 +256,12 @@ function ShopProductListRow({ product, onQuickView }) {
             </span>
           </div>
         </div>
-        <div className="flex items-center justify-between mt-2">
+        <div className="flex items-center justify-between flex-wrap gap-y-2 mt-2">
           <span className="text-[20px] font-black text-[#2C1810]">${product.price}</span>
           <div className="flex items-center gap-2">
             <button
               onClick={handleWishlist}
-              className={`w-8 h-8 rounded-full border flex items-center justify-center transition-colors ${
+              className={`w-8 h-8 rounded-full border flex items-center justify-center shrink-0 transition-colors ${
                 isWished
                   ? "border-[#C4614A] text-[#C4614A]"
                   : "border-[#E8C4B8] text-[#7A4A3A] hover:border-[#C4614A] hover:text-[#C4614A]"
@@ -269,7 +271,7 @@ function ShopProductListRow({ product, onQuickView }) {
             </button>
             <button
               onClick={handleAdd}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#C4614A] hover:bg-[#A84E39] text-white text-[12px] font-semibold transition-colors"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#C4614A] hover:bg-[#A84E39] text-white text-[12px] font-semibold whitespace-nowrap transition-colors"
             >
               <ShoppingBag className="h-3.5 w-3.5" />
               {added ? "Added!" : "Add to Cart"}
@@ -343,6 +345,7 @@ export default function ShopClient({ products }) {
   const [minRating, setMinRating] = useState(0);
   const [sortBy, setSortBy] = useState("featured");
   const [view, setView] = useState("grid");
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [quickViewProduct, setQuickViewProduct] = useState(null);
 
@@ -458,6 +461,200 @@ export default function ShopClient({ products }) {
     minRating > 0 ||
     searchQuery.trim() !== "";
 
+  const activeFilterCount =
+    (selectedCategory !== "all" ? 1 : 0) +
+    selectedBrands.length +
+    (priceRange[0] > 0 || priceRange[1] < 150 ? 1 : 0) +
+    (minRating > 0 ? 1 : 0);
+
+  function FiltersPanel() {
+    return (
+      <>
+        {/* Search */}
+        <div className="relative mb-8">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#C4614A]" />
+          <input
+            type="text"
+            placeholder="Search products..."
+            value={searchQuery}
+            onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
+            className="w-full pl-10 pr-4 py-3 rounded-full border-2 border-[#E8C4B8] bg-white text-[13px] text-[#2C1810] placeholder-[#C4897A] focus:outline-none focus:border-[#C4614A] transition-colors"
+          />
+        </div>
+
+        {/* Categories */}
+        <div className="mb-8">
+          <h3 className="text-[11px] font-black tracking-[0.2em] text-[#2C1810] uppercase mb-4">
+            Categories
+          </h3>
+          <ul className="space-y-2.5">
+            {CATEGORIES.map((cat) => {
+              const count = categoryCount(cat.id);
+              const checked = selectedCategory === cat.id;
+              return (
+                <li key={cat.id}>
+                  <button
+                    onClick={() => { setSelectedCategory(cat.id); setPage(1); }}
+                    className="w-full flex items-center gap-3 group"
+                  >
+                    <span
+                      className={`w-5 h-5 rounded flex items-center justify-center border-2 transition-colors shrink-0 ${
+                        checked
+                          ? "bg-[#C4614A] border-[#C4614A]"
+                          : "border-[#E8C4B8] group-hover:border-[#C4614A]"
+                      }`}
+                    >
+                      {checked && (
+                        <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 12 12">
+                          <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      )}
+                    </span>
+                    <span className={`flex-1 text-left text-[13px] transition-colors ${checked ? "text-[#C4614A] font-semibold" : "text-[#2C1810] group-hover:text-[#C4614A]"}`}>
+                      {cat.emoji && <span className="mr-1.5">{cat.emoji}</span>}
+                      {cat.label}
+                    </span>
+                    <span className="text-[12px] text-[#C4897A]">{count}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+
+        {/* Brands */}
+        <div className="mb-8">
+          <h3 className="text-[11px] font-black tracking-[0.2em] text-[#2C1810] uppercase mb-4">
+            Brands
+          </h3>
+          <ul className="space-y-2.5">
+            {BRANDS.map((brand) => {
+              const checked = selectedBrands.includes(brand);
+              return (
+                <li key={brand}>
+                  <button
+                    onClick={() => toggleBrand(brand)}
+                    className="w-full flex items-center gap-3 group"
+                  >
+                    <span
+                      className={`w-5 h-5 rounded flex items-center justify-center border-2 transition-colors shrink-0 ${
+                        checked
+                          ? "bg-[#C4614A] border-[#C4614A]"
+                          : "border-[#E8C4B8] group-hover:border-[#C4614A]"
+                      }`}
+                    >
+                      {checked && (
+                        <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 12 12">
+                          <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      )}
+                    </span>
+                    <span className={`flex-1 text-left text-[13px] transition-colors ${checked ? "text-[#C4614A] font-semibold" : "text-[#2C1810] group-hover:text-[#C4614A]"}`}>
+                      {brand}
+                    </span>
+                    <span className="text-[12px] text-[#C4897A]">{brandCount(brand)}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+
+        {/* Price Range */}
+        <div className="mb-8">
+          <h3 className="text-[11px] font-black tracking-[0.2em] text-[#2C1810] uppercase mb-4">
+            Price Range
+          </h3>
+          <PriceRangeSlider
+            min={0}
+            max={150}
+            value={priceRange}
+            onChange={handlePriceChange}
+          />
+          <div className="flex items-center gap-3 mt-4">
+            <div className="flex-1">
+              <label className="text-[11px] text-[#7A4A3A] mb-1 block">Min $</label>
+              <input
+                type="number"
+                min={0}
+                max={150}
+                value={minInput}
+                onChange={handleMinInput}
+                className="w-full border-2 border-[#E8C4B8] rounded-lg px-3 py-2 text-[13px] text-[#2C1810] focus:outline-none focus:border-[#C4614A] transition-colors"
+              />
+            </div>
+            <div className="flex-1">
+              <label className="text-[11px] text-[#7A4A3A] mb-1 block">Max $</label>
+              <input
+                type="number"
+                min={0}
+                max={150}
+                value={maxInput}
+                onChange={handleMaxInput}
+                className="w-full border-2 border-[#E8C4B8] rounded-lg px-3 py-2 text-[13px] text-[#2C1810] focus:outline-none focus:border-[#C4614A] transition-colors"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Rating */}
+        <div className="mb-8">
+          <h3 className="text-[11px] font-black tracking-[0.2em] text-[#2C1810] uppercase mb-4">
+            Rating
+          </h3>
+          <div className="space-y-2">
+            {[4, 3, 2].map((r) => (
+              <button
+                key={r}
+                onClick={() => { setMinRating(minRating === r ? 0 : r); setPage(1); }}
+                className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] transition-colors ${
+                  minRating === r
+                    ? "bg-[#F2D4C8] text-[#C4614A]"
+                    : "text-[#2C1810] hover:bg-[#FDE8E0]"
+                }`}
+              >
+                <div className="flex gap-px">
+                  {[1, 2, 3, 4, 5].map((s) => (
+                    <span
+                      key={s}
+                      className="text-[12px]"
+                      style={{ color: s <= r ? "#C4614A" : "#E8C4B8" }}
+                    >
+                      ★
+                    </span>
+                  ))}
+                </div>
+                <span>{r}★ &amp; up</span>
+              </button>
+            ))}
+            <button
+              onClick={() => { setMinRating(0); setPage(1); }}
+              className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] transition-colors ${
+                minRating === 0
+                  ? "bg-[#F2D4C8] text-[#C4614A]"
+                  : "text-[#2C1810] hover:bg-[#FDE8E0]"
+              }`}
+            >
+              <span className="text-base">✦</span>
+              <span>All ratings</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Clear filters */}
+        {hasActiveFilters && (
+          <button
+            onClick={clearAll}
+            className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-full border-2 border-[#E8C4B8] text-[#7A4A3A] text-[13px] font-semibold hover:border-[#C4614A] hover:text-[#C4614A] transition-colors"
+          >
+            <X className="h-3.5 w-3.5" />
+            Clear All Filters
+          </button>
+        )}
+      </>
+    );
+  }
+
   return (
     <>
       {/* Quick View Modal */}
@@ -492,200 +689,44 @@ export default function ShopClient({ products }) {
       <section className="bg-[#FFF8F5] py-10">
         <div className="container mx-auto px-6 lg:px-8">
           <div className="flex gap-8">
-            {/* ── Sidebar ── */}
+            {/* ── Sidebar (desktop) ── */}
             <aside className="hidden lg:block w-[260px] shrink-0">
-              {/* Search */}
-              <div className="relative mb-8">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#C4614A]" />
-                <input
-                  type="text"
-                  placeholder="Search products..."
-                  value={searchQuery}
-                  onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
-                  className="w-full pl-10 pr-4 py-3 rounded-full border-2 border-[#E8C4B8] bg-white text-[13px] text-[#2C1810] placeholder-[#C4897A] focus:outline-none focus:border-[#C4614A] transition-colors"
-                />
-              </div>
-
-              {/* Categories */}
-              <div className="mb-8">
-                <h3 className="text-[11px] font-black tracking-[0.2em] text-[#2C1810] uppercase mb-4">
-                  Categories
-                </h3>
-                <ul className="space-y-2.5">
-                  {CATEGORIES.map((cat) => {
-                    const count = categoryCount(cat.id);
-                    const checked = selectedCategory === cat.id;
-                    return (
-                      <li key={cat.id}>
-                        <button
-                          onClick={() => { setSelectedCategory(cat.id); setPage(1); }}
-                          className="w-full flex items-center gap-3 group"
-                        >
-                          <span
-                            className={`w-5 h-5 rounded flex items-center justify-center border-2 transition-colors shrink-0 ${
-                              checked
-                                ? "bg-[#C4614A] border-[#C4614A]"
-                                : "border-[#E8C4B8] group-hover:border-[#C4614A]"
-                            }`}
-                          >
-                            {checked && (
-                              <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 12 12">
-                                <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                              </svg>
-                            )}
-                          </span>
-                          <span className={`flex-1 text-left text-[13px] transition-colors ${checked ? "text-[#C4614A] font-semibold" : "text-[#2C1810] group-hover:text-[#C4614A]"}`}>
-                            {cat.emoji && <span className="mr-1.5">{cat.emoji}</span>}
-                            {cat.label}
-                          </span>
-                          <span className="text-[12px] text-[#C4897A]">{count}</span>
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-
-              {/* Brands */}
-              <div className="mb-8">
-                <h3 className="text-[11px] font-black tracking-[0.2em] text-[#2C1810] uppercase mb-4">
-                  Brands
-                </h3>
-                <ul className="space-y-2.5">
-                  {BRANDS.map((brand) => {
-                    const checked = selectedBrands.includes(brand);
-                    return (
-                      <li key={brand}>
-                        <button
-                          onClick={() => toggleBrand(brand)}
-                          className="w-full flex items-center gap-3 group"
-                        >
-                          <span
-                            className={`w-5 h-5 rounded flex items-center justify-center border-2 transition-colors shrink-0 ${
-                              checked
-                                ? "bg-[#C4614A] border-[#C4614A]"
-                                : "border-[#E8C4B8] group-hover:border-[#C4614A]"
-                            }`}
-                          >
-                            {checked && (
-                              <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 12 12">
-                                <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                              </svg>
-                            )}
-                          </span>
-                          <span className={`flex-1 text-left text-[13px] transition-colors ${checked ? "text-[#C4614A] font-semibold" : "text-[#2C1810] group-hover:text-[#C4614A]"}`}>
-                            {brand}
-                          </span>
-                          <span className="text-[12px] text-[#C4897A]">{brandCount(brand)}</span>
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-
-              {/* Price Range */}
-              <div className="mb-8">
-                <h3 className="text-[11px] font-black tracking-[0.2em] text-[#2C1810] uppercase mb-4">
-                  Price Range
-                </h3>
-                <PriceRangeSlider
-                  min={0}
-                  max={150}
-                  value={priceRange}
-                  onChange={handlePriceChange}
-                />
-                <div className="flex items-center gap-3 mt-4">
-                  <div className="flex-1">
-                    <label className="text-[11px] text-[#7A4A3A] mb-1 block">Min $</label>
-                    <input
-                      type="number"
-                      min={0}
-                      max={150}
-                      value={minInput}
-                      onChange={handleMinInput}
-                      className="w-full border-2 border-[#E8C4B8] rounded-lg px-3 py-2 text-[13px] text-[#2C1810] focus:outline-none focus:border-[#C4614A] transition-colors"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <label className="text-[11px] text-[#7A4A3A] mb-1 block">Max $</label>
-                    <input
-                      type="number"
-                      min={0}
-                      max={150}
-                      value={maxInput}
-                      onChange={handleMaxInput}
-                      className="w-full border-2 border-[#E8C4B8] rounded-lg px-3 py-2 text-[13px] text-[#2C1810] focus:outline-none focus:border-[#C4614A] transition-colors"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Rating */}
-              <div className="mb-8">
-                <h3 className="text-[11px] font-black tracking-[0.2em] text-[#2C1810] uppercase mb-4">
-                  Rating
-                </h3>
-                <div className="space-y-2">
-                  {[4, 3, 2].map((r) => (
-                    <button
-                      key={r}
-                      onClick={() => { setMinRating(minRating === r ? 0 : r); setPage(1); }}
-                      className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] transition-colors ${
-                        minRating === r
-                          ? "bg-[#F2D4C8] text-[#C4614A]"
-                          : "text-[#2C1810] hover:bg-[#FDE8E0]"
-                      }`}
-                    >
-                      <div className="flex gap-px">
-                        {[1, 2, 3, 4, 5].map((s) => (
-                          <span
-                            key={s}
-                            className="text-[12px]"
-                            style={{ color: s <= r ? "#C4614A" : "#E8C4B8" }}
-                          >
-                            ★
-                          </span>
-                        ))}
-                      </div>
-                      <span>{r}★ & up</span>
-                    </button>
-                  ))}
-                  <button
-                    onClick={() => { setMinRating(0); setPage(1); }}
-                    className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] transition-colors ${
-                      minRating === 0
-                        ? "bg-[#F2D4C8] text-[#C4614A]"
-                        : "text-[#2C1810] hover:bg-[#FDE8E0]"
-                    }`}
-                  >
-                    <span className="text-base">✦</span>
-                    <span>All ratings</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Clear filters */}
-              {hasActiveFilters && (
-                <button
-                  onClick={clearAll}
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-full border-2 border-[#E8C4B8] text-[#7A4A3A] text-[13px] font-semibold hover:border-[#C4614A] hover:text-[#C4614A] transition-colors"
-                >
-                  <X className="h-3.5 w-3.5" />
-                  Clear All Filters
-                </button>
-              )}
+              <FiltersPanel />
             </aside>
 
             {/* ── Product area ── */}
             <div className="flex-1 min-w-0">
               {/* Sort + view bar */}
               <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-                <p className="text-[14px] text-[#7A4A3A]">
-                  Showing{" "}
-                  <span className="font-bold text-[#2C1810]">{filtered.length}</span>{" "}
-                  product{filtered.length !== 1 ? "s" : ""}
-                </p>
+                <div className="flex items-center gap-3">
+                  <Sheet open={filtersOpen} onOpenChange={setFiltersOpen}>
+                    <SheetTrigger
+                      className="lg:hidden"
+                      render={
+                        <button className="relative flex items-center gap-2 px-4 py-2.5 rounded-full border-2 border-[#E8C4B8] text-[#2C1810] text-[13px] font-semibold hover:border-[#C4614A] hover:text-[#C4614A] transition-colors" />
+                      }
+                    >
+                      <SlidersHorizontal className="h-3.5 w-3.5" />
+                      Filters
+                      {activeFilterCount > 0 && (
+                        <span className="ml-0.5 w-5 h-5 rounded-full bg-[#C4614A] text-white text-[11px] font-bold flex items-center justify-center">
+                          {activeFilterCount}
+                        </span>
+                      )}
+                    </SheetTrigger>
+                    <SheetContent side="left" className="bg-[#FFF8F5] w-[300px] p-6 overflow-y-auto border-r border-[#E8C4B8]">
+                      <h2 className="text-[16px] font-black text-[#2C1810] uppercase tracking-wide mb-6">
+                        Filters
+                      </h2>
+                      <FiltersPanel />
+                    </SheetContent>
+                  </Sheet>
+                  <p className="text-[14px] text-[#7A4A3A]">
+                    Showing{" "}
+                    <span className="font-bold text-[#2C1810]">{filtered.length}</span>{" "}
+                    product{filtered.length !== 1 ? "s" : ""}
+                  </p>
+                </div>
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2">
                     <span className="text-[13px] text-[#7A4A3A]">Sort by</span>

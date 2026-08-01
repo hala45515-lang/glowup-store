@@ -595,13 +595,13 @@ export default function HomeProductQuickViewModal({ product, relatedProducts = [
           </div>
 
           {/* ── TABS ────────────────────────────────────────────────────────── */}
-          <div className="border-t border-[#E8C4B8] px-8 pt-7 pb-8">
-            <div className="flex border-b border-[#E8C4B8] mb-6">
+          <div className="border-t border-[#E8C4B8] px-5 sm:px-8 pt-7 pb-8">
+            <div className="flex border-b border-[#E8C4B8] mb-6 overflow-x-auto">
               {TABS.map((tab, i) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(i)}
-                  className={`pb-3 pr-10 text-[15px] font-semibold relative transition-colors ${
+                  className={`pb-3 pr-5 sm:pr-10 whitespace-nowrap text-[15px] font-semibold relative transition-colors ${
                     activeTab === i ? "text-[#C4614A]" : "text-[#7A4A3A] hover:text-[#2C1810]"
                   }`}
                 >

@@ -154,10 +154,10 @@ export default function CartClient({ suggestions: suggestionPool = [], repairIma
 
       {/* Content */}
       <div className="relative max-w-[1200px] mx-auto px-6 py-10">
-        <div className="flex gap-8 items-start">
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
 
           {/* Left: cart items */}
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 w-full">
             {cartItems.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -369,7 +369,7 @@ export default function CartClient({ suggestions: suggestionPool = [], repairIma
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="w-[320px] shrink-0 flex flex-col gap-4"
+            className="w-full lg:w-[320px] shrink-0 flex flex-col gap-4"
           >
             <div className="bg-white rounded-3xl border border-[#E8C4B8] p-6">
               <h2
