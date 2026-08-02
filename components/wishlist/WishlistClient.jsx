@@ -3,7 +3,7 @@
 import { Fragment } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, ShoppingBag, Trash2, ArrowLeft, ChevronRight } from "lucide-react";
+import { Heart, ShoppingBag, Trash2, ArrowLeft, ChevronRight, X } from "lucide-react";
 import { useWishlistStore } from "@/store/wishlistStore";
 import { useCartStore } from "@/store/cartStore";
 import { toast } from "sonner";
@@ -28,6 +28,7 @@ const shineVariants = {
 export default function WishlistClient({ repairImages = {}, repairImagesByName = {} }) {
   const wishlistItems      = useWishlistStore((s) => s.items);
   const removeFromWishlist = useWishlistStore((s) => s.removeItem);
+  const clearWishlist      = useWishlistStore((s) => s.clearWishlist);
   const addToCart          = useCartStore((s) => s.addItem);
 
   function repairedImageFor(product) {
@@ -48,6 +49,11 @@ export default function WishlistClient({ repairImages = {}, repairImagesByName =
     wishlistItems.forEach((p) => addToCart(withRepairedImage(p)));
     wishlistItems.forEach((p) => removeFromWishlist(p.id));
     toast.success("All items moved to cart!");
+  }
+
+  function handleRemoveAll() {
+    clearWishlist();
+    toast.success("Wishlist cleared.");
   }
 
   return (
@@ -242,15 +248,26 @@ export default function WishlistClient({ repairImages = {}, repairImagesByName =
               transition={{ duration: 0.4, delay: 0.2 }}
               className="flex flex-col items-center gap-4"
             >
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.97 }}
-                onClick={handleMoveAllToCart}
-                className="flex items-center gap-2 px-8 py-4 rounded-full bg-[#7A3048] hover:bg-[#5C1E30] text-white font-semibold text-[14px] transition-colors"
-              >
-                <ShoppingBag className="h-4 w-4" />
-                Move All to Cart
-              </motion.button>
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={handleMoveAllToCart}
+                  className="flex items-center gap-2 px-8 py-4 rounded-full bg-[#7A3048] hover:bg-[#5C1E30] text-white font-semibold text-[14px] transition-colors"
+                >
+                  <ShoppingBag className="h-4 w-4" />
+                  Move All to Cart
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={handleRemoveAll}
+                  className="flex items-center gap-2 px-8 py-4 rounded-full border-2 border-[#E8C4B8] text-[#7A4A3A] font-semibold text-[14px] hover:border-[#C4614A] hover:text-[#C4614A] transition-colors"
+                >
+                  <X className="h-4 w-4" />
+                  Remove All
+                </motion.button>
+              </div>
               <Link
                 href="/shop"
                 className="group flex items-center gap-2 text-[#C4614A] text-[13px] font-semibold hover:underline"

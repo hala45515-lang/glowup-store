@@ -15,6 +15,7 @@ import {
   ArrowLeft,
   Check,
   Sparkles,
+  X,
 } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 import { toast } from "sonner";
@@ -70,6 +71,12 @@ export default function CartClient({ suggestions: suggestionPool = [], repairIma
   const updateQty      = useCartStore((s) => s.updateQuantity);
   const removeFromCart = useCartStore((s) => s.removeItem);
   const addToCart      = useCartStore((s) => s.addItem);
+  const clearCart       = useCartStore((s) => s.clearCart);
+
+  function handleClearCart() {
+    clearCart();
+    toast.success("Cart cleared.");
+  }
 
   const subtotal = cartItems.reduce((s, i) => s + parseFloat(i.price || 0) * i.quantity, 0);
   const discount = promoApplied ? subtotal * 0.1 : 0;
@@ -294,13 +301,22 @@ export default function CartClient({ suggestions: suggestionPool = [], repairIma
                   </div>
                 </motion.div>
 
-                <Link
-                  href="/shop"
-                  className="group flex items-center gap-2 text-[#C4614A] text-[13px] font-semibold hover:underline mb-8 w-fit"
-                >
-                  <ArrowLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1" />
-                  Continue Shopping
-                </Link>
+                <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mb-8">
+                  <Link
+                    href="/shop"
+                    className="group flex items-center gap-2 text-[#C4614A] text-[13px] font-semibold hover:underline w-fit"
+                  >
+                    <ArrowLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1" />
+                    Continue Shopping
+                  </Link>
+                  <button
+                    onClick={handleClearCart}
+                    className="group flex items-center gap-2 text-[#7A4A3A] text-[13px] font-semibold hover:text-[#C4614A] hover:underline w-fit"
+                  >
+                    <X className="h-4 w-4" />
+                    Remove All
+                  </button>
+                </div>
 
                 {/* Promo code */}
                 <motion.div
